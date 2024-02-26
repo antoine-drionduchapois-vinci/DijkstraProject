@@ -22,7 +22,6 @@ public class Graph {
             try{
                 Scanner scanner = new Scanner(file);
                 // here code city extraction
-                City myCity;
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
                     String[] parts = line.split(",");
@@ -46,6 +45,19 @@ public class Graph {
             try{
                 Scanner scanner = new Scanner(file);
                 // here code for road extaraction
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    String[] parts = line.split(",");
+                    if (parts.length == 2) {
+                        int cityIdStart = Integer.parseInt(parts[0].trim());
+                        int cityIdEnd = Integer.parseInt(parts[1].trim());
+
+
+                    } else {
+                        System.err.println("Invalid line: " + line);
+                    }
+                }
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }

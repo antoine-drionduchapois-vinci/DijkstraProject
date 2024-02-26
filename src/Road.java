@@ -8,4 +8,16 @@ public class Road {
         this.startCityId = startCityId;
         this.arrivalCityId = arrivalCityId;
     }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public int getStartCityId() {
+        return startCityId;
+    }
+
+    public int getArrivalCityId() {
+        return arrivalCityId;
+    }
 }

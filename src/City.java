@@ -9,4 +9,20 @@ public class City {
         this.longitude = longitude;
         this.latitude = latitude;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
 }
