@@ -5,7 +5,7 @@ import java.util.*;
 public class Graph {
 
     protected Set<Integer> city;
-    protected Map<Integer, Set<Integer>> cityMap;
+    private Map<Integer, Set<Integer>> cityMap;
     public Graph(File cityFile, File roadFile){
         city = new HashSet<>();
         cityMap = new HashMap<>();
@@ -17,7 +17,7 @@ public class Graph {
 
     }
 
-    public static void constructCitiesFromTxt(File file) throws FileNotFoundException {
+    public void constructCitiesFromTxt(File file) throws FileNotFoundException {
         if (file.getPath().equals("cities.txt")){
             try{
                 Scanner scanner = new Scanner(file);
@@ -33,6 +33,7 @@ public class Graph {
                         double longitude = Double.parseDouble(parts[3].trim());
 
                         City city = new City(cityId, cityName, latitude, longitude);
+                        cityMap.put(cityId,new HashSet<>());
                     } else {
                         System.err.println("Invalid line: " + line);
                     }
