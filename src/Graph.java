@@ -4,13 +4,13 @@ import java.util.*;
 
 public class Graph {
 
-    protected Set<Integer> city;
     private Map<Integer, Set<Integer>> cityMap;
     private Map<Integer, City> cityFinder;
+    private Map<String,Integer> cityIdFinder;
     public Graph(File cityFile, File roadFile){
-        city = new HashSet<>();
         cityMap = new HashMap<>();
         cityFinder = new HashMap<>();
+        cityIdFinder = new HashMap<>();
         try{
             constructCitiesFromTxt(cityFile);
             constructRoadFromTxt(roadFile);
@@ -36,6 +36,7 @@ public class Graph {
                     City city = new City(cityId, cityName, latitude, longitude);
                     cityMap.put(cityId,new HashSet<>());
                     cityFinder.put(cityId, city);
+                    cityIdFinder.put(cityName,cityId);
                 } else {
                     System.err.println("Invalid line: " + line);
                 }
@@ -76,8 +77,11 @@ public class Graph {
         }
     }
 
-    public void calculerItineraireMinimisantNombreRoutes(String city1,String city2){
+    public List<Integer> calculerItineraireMinimisantNombreRoutes(String city1, String city2) throws NoSuchElementException {
+        int startCityId = cityIdFinder.get(city1);
+        int endCityId = cityIdFinder.get(city2);
 
+      return null;
     }
 
     public void calculerItineraireMinimisantKm(String city1, String city2){
