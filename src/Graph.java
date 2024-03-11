@@ -81,6 +81,22 @@ public class Graph {
         int startCityId = cityIdFinder.get(city1);
         int endCityId = cityIdFinder.get(city2);
 
+        Set<Integer> visited = new HashSet<>();
+        LinkedList<Integer> list = new LinkedList<>();
+        HashMap <Integer, Integer>  pathHistory = new HashMap<>();
+
+        list.add(startCityId);
+
+        while (!list.isEmpty()) {
+            for (Integer i : cityMap.get(list.getFirst()) ) {
+                list.add(i);
+            }
+            visited.add(list.removeFirst());
+
+        }
+
+
+
       return null;
     }
 
