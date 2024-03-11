@@ -11,6 +11,7 @@ public class Graph {
         cityMap = new HashMap<>();
         try{
             constructCitiesFromTxt(cityFile);
+            constructRoadFromTxt(roadFile);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -18,52 +19,48 @@ public class Graph {
     }
 
     public void constructCitiesFromTxt(File file) throws FileNotFoundException {
-        if (file.getPath().equals("cities.txt")){
-            try{
-                Scanner scanner = new Scanner(file);
-                // here code city extraction
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    String[] parts = line.split(",");
-                    if (parts.length == 4) {
-                        int cityId = Integer.parseInt(parts[0].trim());
-                        String cityName = parts[1].trim();
-                        double latitude = Double.parseDouble(parts[2].trim());
-                        double longitude = Double.parseDouble(parts[3].trim());
+        try{
+            Scanner scanner = new Scanner(file);
+            // here code city extraction
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(",");
+                if (parts.length == 4) {
+                    int cityId = Integer.parseInt(parts[0].trim());
+                    String cityName = parts[1].trim();
+                    double latitude = Double.parseDouble(parts[2].trim());
+                    double longitude = Double.parseDouble(parts[3].trim());
 
-                        City city = new City(cityId, cityName, latitude, longitude);
-                        cityMap.put(cityId,new HashSet<>());
-                    } else {
-                        System.err.println("Invalid line: " + line);
-                    }
+                    City city = new City(cityId, cityName, latitude, longitude);
+                    cityMap.put(cityId,new HashSet<>());
+                } else {
+                    System.err.println("Invalid line: " + line);
                 }
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             }
-        }else {
-            try{
-                Scanner scanner = new Scanner(file);
-                // here code for road extaraction
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    String[] parts = line.split(",");
-                    if (parts.length == 2) {
-                        int cityIdStart = Integer.parseInt(parts[0].trim());
-                        int cityIdEnd = Integer.parseInt(parts[1].trim());
-
-
-                    } else {
-                        System.err.println("Invalid line: " + line);
-                    }
-                }
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
+    }
 
+    public void constructRoadFromTxt (File file) {
+        try{
+            Scanner scanner = new Scanner(file);
+            // here code for road extaraction
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(",");
+                if (parts.length == 2) {
+                    int cityIdStart = Integer.parseInt(parts[0].trim());
+                    int cityIdEnd = Integer.parseInt(parts[1].trim());
 
+                } else {
+                    System.err.println("Invalid line: " + line);
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void calculerItineraireMinimisantNombreRoutes(String city1,String city2){
