@@ -64,6 +64,7 @@ public class Graph {
 
                     Road road = new Road(distance,cityIdStart,cityIdEnd);
 
+                    cityMap.get(cityIdStart).add(cityIdEnd);
 
                 } else {
                     System.err.println("Invalid line: " + line);
