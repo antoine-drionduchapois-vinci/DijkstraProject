@@ -150,6 +150,28 @@ public class Graph {
     }
 
     public void calculerItineraireMinimisantKm(String city1, String city2){
+        int startCityId = cityIdFinder.get(city1);
+        int endCityId = cityIdFinder.get(city2);
+
+        // comment retenir les noeuds precendents ??
+
+        ArrayList<City> visited = new ArrayList<City>();
+        ArrayList<City> unvisited = new ArrayList<City>();
+        Map<City,Double> distance = new HashMap<City,Double>();
+
+        // we fill up the unvisited array with all the cities?
+        for (Map.Entry<Integer,City> entry : cityFinder.entrySet()){
+            unvisited.add(entry.getValue());
+            // We put infinity distance in every node
+            distance.put(entry.getValue(),Double.MAX_VALUE);
+        }
+        // First city1 node should  have a distance of 0;
+        distance.put(cityFinder.get(startCityId),0.0);
+
+        // We remove the starting city from the unvisited?
+        unvisited.remove(cityFinder.get(startCityId));
+
+
 
     }
 }
