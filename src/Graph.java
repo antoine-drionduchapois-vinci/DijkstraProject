@@ -153,11 +153,16 @@ public class Graph {
         int startCityId = cityIdFinder.get(city1);
         int endCityId = cityIdFinder.get(city2);
 
+        City cityFirst = cityFinder.get(startCityId);
+        City cityEnd = cityFinder.get(endCityId);
+
         // comment retenir les noeuds precendents ??
 
         ArrayList<City> visited = new ArrayList<City>();
         ArrayList<City> unvisited = new ArrayList<City>();
         Map<City,Double> distance = new HashMap<City,Double>();
+        Map<City,Double> mapProvisoir = new HashMap<City,Double>();     // Faire un triset pour l optimisation
+        Map<City,City> parent = new HashMap<City,City>();
 
         // we fill up the unvisited array with all the cities?
         for (Map.Entry<Integer,City> entry : cityFinder.entrySet()){
@@ -167,9 +172,28 @@ public class Graph {
         }
         // First city1 node should  have a distance of 0;
         distance.put(cityFinder.get(startCityId),0.0);
+        // We add the parent to the city1 which is null?
+        parent.put(cityFirst,null);
 
-        // We remove the starting city from the unvisited?
-        unvisited.remove(cityFinder.get(startCityId));
+        // Start boucle from city1
+        int currentNodeId = startCityId;
+
+        while (!unvisited.isEmpty() && !visited.contains(cityEnd)) {
+            City currentNodeCity = cityFinder.get(currentNodeId);
+            List<Road> routes = cityMap.get(currentNodeId);
+            for (Road myRoad : routes) {
+                if (myRoad.getDistance() < distance.get(currentNodeCity)) {
+                    distance.put(currentNodeCity, myRoad.getDistance());
+                    parent.put(cityFinder.get(myRoad.getArrivalCityId()),currentNodeCity);
+                }
+            }
+            visited.add(currentNodeCity);
+            unvisited.remove(currentNodeCity);
+            currentNodeId = unvisited.
+        }
+
+
+
 
 
 
