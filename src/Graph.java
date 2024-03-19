@@ -3,6 +3,8 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Graph {
+    private static final int EXPECTED_CITY_DATA_LENGTH = 4;
+    private static final int EXPECTED_ROAD_DATA_LENGTH = 2;
 
     private Map<Integer, List<Road>> cityMap;
     private Map<Integer, City> cityFinder;
@@ -27,7 +29,7 @@ public class Graph {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(",");
-                if (parts.length == 4) {
+                if (parts.length == EXPECTED_CITY_DATA_LENGTH) {
                     int cityId = Integer.parseInt(parts[0].trim());
                     String cityName = parts[1].trim();
                     double latitude = Double.parseDouble(parts[2].trim());
@@ -52,7 +54,7 @@ public class Graph {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(",");
-                if (parts.length == 2) {
+                if (parts.length == EXPECTED_ROAD_DATA_LENGTH) {
                     int cityIdStart = Integer.parseInt(parts[0].trim());
                     int cityIdEnd = Integer.parseInt(parts[1].trim());
 
@@ -119,37 +121,77 @@ public class Graph {
             throw new NoSuchElementException("No path found");
         }
         // Reconstruct the path
-        List<String> path = new ArrayList<>();
-        int count = 0;
-        double total_dist = 0.0;
-        int current = endCityId;
-        while (current != startCityId) {
-            int previous = pathHistory.get(current);
-            double distance = 0.0;
-            for (Road road : cityMap.get(previous)) {
-                if (road.getArrivalCityId() == current) {
-                    distance = road.getDistance();
-                    total_dist += distance;
-                    break;
-                }
+        reconstructPath(pathHistory, startCityId, endCityId);
+    }
 
-            }
-            count++;
-            City prevCity = cityFinder.get(previous);
-            City currentCity = cityFinder.get(current);
-            path.add(prevCity.getCityName() + " -> " + currentCity.getCityName() + " (" + distance + "km)");
-            current = previous;
+    public void calculerItineraireMinimisantKm(String city1, String city2) throws NoSuchElementException {
+        int startCityId = cityIdFinder.get(city1);
+        int endCityId = cityIdFinder.get(city2);
+
+        if (!cityIdFinder.containsKey(city1) || !cityIdFinder.containsKey(city2)) {
+            throw new NoSuchElementException("City not found");
         }
 
-        Collections.reverse(path);
-        System.out.println("Itinéraire de " + cityFinder.get(startCityId).getCityName() + " à " + cityFinder.get(endCityId).getCityName() + " : " + count + " routes et " + total_dist + " km.");
+        // Initialisation des structures de données pour l'algorithme de Dijkstra
+        Set<Integer> visited = new HashSet<>();
+        Map<Integer, Double> distances = new HashMap<>();
+        Map<Integer, Integer> previous = new HashMap<>();
 
+        // Initialisation de la file de priorité pour gérer les villes à explorer
+        PriorityQueue<Integer> queue = new PriorityQueue<>(Comparator.comparingDouble(distances::get));
+        queue.add(startCityId);
+        distances.put(startCityId, 0.0);
+
+        // Algorithme de Dijkstra
+        while (!queue.isEmpty()) {
+            int currentCityId = queue.poll();
+            if (currentCityId == endCityId) {
+                break;
+            }
+            if (visited.contains(currentCityId)) {
+                continue;
+            }
+            visited.add(currentCityId);
+
+            // Parcourir les routes sortantes de la ville actuelle
+            for (Road road : cityMap.getOrDefault(currentCityId, new ArrayList<>())) {
+                int neighbor = road.getArrivalCityId();
+                double distanceToNeighbor = distances.get(currentCityId) + road.getDistance();
+                if (!distances.containsKey(neighbor) || distanceToNeighbor < distances.get(neighbor)) {
+                    distances.put(neighbor, distanceToNeighbor);
+                    previous.put(neighbor, currentCityId);
+                    queue.add(neighbor);
+                }
+            }
+        }
+
+        // Reconstruct the path
+        reconstructPath(previous, startCityId, endCityId);
+    }
+
+    private void reconstructPath(Map<Integer, Integer> previous, int startCityId, int endCityId) {
+        List<String> path = new ArrayList<>();
+        double totalDistance = 0.0;
+        int current = endCityId;
+        while (current != startCityId) {
+            int previousCityId = previous.get(current);
+            double distanceToPrevious = 0.0;
+            for (Road road : cityMap.get(previousCityId)) {
+                if (road.getArrivalCityId() == current) {
+                    distanceToPrevious = road.getDistance();
+                    totalDistance += distanceToPrevious;
+                    break;
+                }
+            }
+            City prevCity = cityFinder.get(previousCityId);
+            City currentCity = cityFinder.get(current);
+            path.add(prevCity.getCityName() + " -> " + currentCity.getCityName() + " (" + distanceToPrevious + "km)");
+            current = previousCityId;
+        }
+        Collections.reverse(path);
+        System.out.println("Itinéraire de " + cityFinder.get(startCityId).getCityName() + " à " + cityFinder.get(endCityId).getCityName() + " : " + path.size() + " routes et " + totalDistance + " km.");
         for (String step : path) {
             System.out.println(step);
         }
-    }
-
-    public void calculerItineraireMinimisantKm(String city1, String city2){
-
     }
 }
