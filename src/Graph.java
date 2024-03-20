@@ -77,7 +77,9 @@ public class Graph {
         double longitude1 = cityFinder.get(cityId1).getLongitude();
         double latitude2 = cityFinder.get(cityId2).getLatitude();
         double longitude2 = cityFinder.get(cityId2).getLongitude();
+
         double distance = Util.distance(longitude1,latitude1,longitude2,latitude2);
+
         Road road = new Road(distance, cityId1, cityId2);
         cityMap.get(cityId1).add(road);
     }
