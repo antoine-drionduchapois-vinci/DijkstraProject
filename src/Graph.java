@@ -6,22 +6,24 @@ public class Graph {
     private static final int EXPECTED_CITY_DATA_LENGTH = 4;
     private static final int EXPECTED_ROAD_DATA_LENGTH = 2;
 
-    private Map<Integer, List<Road>> cityMap;
-    private Map<Integer, City> cityFinder;
-    private Map<String,Integer> cityIdFinder;
+    private Map<Integer, List<Road>> cityMap; // Map to store roads for each city
+    private Map<Integer, City> cityFinder; // Map to quickly find city details by ID
+    private Map<String,Integer> cityIdFinder; // Map to quickly find city ID by name
+
+    // Constructor to initialize the graph with city and road data from files
     public Graph(File cityFile, File roadFile){
         cityMap = new HashMap<>();
         cityFinder = new HashMap<>();
         cityIdFinder = new HashMap<>();
         try{
-            constructCitiesFromTxt(cityFile);
-            constructRoadFromTxt(roadFile);
+            constructCitiesFromTxt(cityFile); // Construct cities from file
+            constructRoadFromTxt(roadFile); // Construct roads from file
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
     }
 
+    // Method to construct cities from a text file
     public void constructCitiesFromTxt(File file) throws FileNotFoundException {
         try{
             Scanner scanner = new Scanner(file);
@@ -48,6 +50,7 @@ public class Graph {
         }
     }
 
+    // Method to construct roads from a text file
     public void constructRoadFromTxt(File file) {
         try{
             Scanner scanner = new Scanner(file);
@@ -69,6 +72,7 @@ public class Graph {
         }
     }
 
+    // Method to add a road between two cities
     private void addRoad(int cityId1, int cityId2) {
         if (!cityMap.containsKey(cityId1)) {
             cityMap.put(cityId1, new ArrayList<>());
@@ -84,6 +88,7 @@ public class Graph {
         cityMap.get(cityId1).add(road);
     }
 
+    // Method to calculate the shortest path minimizing the number of routes
     public void calculerItineraireMinimisantNombreRoutes(String city1, String city2) throws NoSuchElementException {
         int startCityId = cityIdFinder.get(city1);
         int endCityId = cityIdFinder.get(city2);
@@ -126,6 +131,7 @@ public class Graph {
         reconstructPath(pathHistory, startCityId, endCityId);
     }
 
+    // Method to calculate the shortest path minimizing the distance
     public void calculerItineraireMinimisantKm(String city1, String city2) throws NoSuchElementException {
         int startCityId = cityIdFinder.get(city1);
         int endCityId = cityIdFinder.get(city2);
@@ -134,17 +140,17 @@ public class Graph {
             throw new NoSuchElementException("City not found");
         }
 
-        // Initialisation des structures de données pour l'algorithme de Dijkstra
+        // Initialize data structures for Dijkstra's algorithm
         Set<Integer> visited = new HashSet<>();
         Map<Integer, Double> distances = new HashMap<>();
         Map<Integer, Integer> previous = new HashMap<>();
 
-        // Initialisation de la file de priorité pour gérer les villes à explorer
+        // Initialize priority queue to manage cities to explore
         PriorityQueue<Integer> queue = new PriorityQueue<>(Comparator.comparingDouble(distances::get));
         queue.add(startCityId);
         distances.put(startCityId, 0.0);
 
-        // Algorithme de Dijkstra
+        // Dijkstra's algorithm
         while (!queue.isEmpty()) {
             int currentCityId = queue.poll();
             if (currentCityId == endCityId) {
@@ -155,7 +161,7 @@ public class Graph {
             }
             visited.add(currentCityId);
 
-            // Parcourir les routes sortantes de la ville actuelle
+            // Traverse outgoing roads from current city
             for (Road road : cityMap.getOrDefault(currentCityId, new ArrayList<>())) {
                 int neighbor = road.getArrivalCityId();
                 double distanceToNeighbor = distances.get(currentCityId) + road.getDistance();
@@ -171,6 +177,7 @@ public class Graph {
         reconstructPath(previous, startCityId, endCityId);
     }
 
+    // Method to reconstruct the path based on previous node information
     private void reconstructPath(Map<Integer, Integer> previous, int startCityId, int endCityId) {
         List<String> path = new ArrayList<>();
         double totalDistance = 0.0;
