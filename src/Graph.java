@@ -145,14 +145,14 @@ public class Graph {
         Map<Integer, Double> distances = new HashMap<>();
         Map<Integer, Integer> previous = new HashMap<>();
 
-        // Initialize priority queue to manage cities to explore
-        PriorityQueue<Integer> queue = new PriorityQueue<>(Comparator.comparingDouble(distances::get));
-        queue.add(startCityId);
-        distances.put(startCityId, 0.0);
+        // Initialize TreeSet to manage cities to explore based on their distances
+        TreeSet<Integer> queue = new TreeSet<>(Comparator.comparingDouble(distances::get));
+        distances.put(startCityId, 0.0); // Set distance to start city as 0
+        queue.add(startCityId); // Add start city to TreeSet
 
         // Dijkstra's algorithm
         while (!queue.isEmpty()) {
-            int currentCityId = queue.poll();
+            int currentCityId = queue.pollFirst();
             if (currentCityId == endCityId) {
                 break;
             }
